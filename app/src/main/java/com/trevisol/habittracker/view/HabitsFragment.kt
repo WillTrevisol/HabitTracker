@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trevisol.habittracker.R
 import com.trevisol.habittracker.databinding.FragmentHabitsBinding
+import com.trevisol.habittracker.domain.model.Habit
 import com.trevisol.habittracker.view.adapter.HabitsAdapter
 import com.trevisol.habittracker.viewmodel.HabitsViewModel
 import kotlinx.coroutines.launch
@@ -27,7 +28,9 @@ class HabitsFragment : Fragment() {
         HabitsViewModel.habitsViewModelFactory()
     }
 
-    private val habitsAdapter = HabitsAdapter()
+    private val habitsAdapter = HabitsAdapter {
+        onHabitClick(it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,5 +69,11 @@ class HabitsFragment : Fragment() {
             adapter = habitsAdapter
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    private fun onHabitClick(habit: Habit) {
+        val bundle = Bundle()
+        bundle.putLong("habitId", habit.id)
+        findNavController().navigate(R.id.habitRegisterFragment, bundle)
     }
 }

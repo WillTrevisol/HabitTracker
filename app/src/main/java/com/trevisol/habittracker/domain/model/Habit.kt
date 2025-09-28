@@ -4,11 +4,11 @@ import com.trevisol.habittracker.data.entity.HabitEntity
 
 data class Habit(
     val id: Long = 0,
-    val name: String,
-    val description: String,
-    val frequencyType: String,
-    val daysOfWeek: String? = null,
-    val status: Boolean = false,
+    var name: String,
+    var description: String,
+    var frequencyType: String,
+    var daysOfWeek: String? = null,
+    var status: Boolean = false,
 ) {
     fun toEntity(): HabitEntity = HabitEntity(
         id = id,

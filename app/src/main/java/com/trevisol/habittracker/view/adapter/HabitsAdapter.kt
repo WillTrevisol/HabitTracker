@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.trevisol.habittracker.databinding.HabitTileBinding
 import com.trevisol.habittracker.domain.model.Habit
 
-class HabitsAdapter(): ListAdapter<Habit, HabitsAdapter.HabitsTileViewHolder>(HabitDiffCallback) {
+class HabitsAdapter(
+    private val onItemClick: (Habit) -> Unit
+): ListAdapter<Habit, HabitsAdapter.HabitsTileViewHolder>(HabitDiffCallback) {
 
     inner class HabitsTileViewHolder(private val tileHabitBinding: HabitTileBinding): RecyclerView.ViewHolder(tileHabitBinding.root) {
         fun bind(habit: Habit) {
@@ -34,6 +36,11 @@ class HabitsAdapter(): ListAdapter<Habit, HabitsAdapter.HabitsTileViewHolder>(Ha
 
     override fun onBindViewHolder(holder: HabitsTileViewHolder, position: Int) {
         val habit = getItem(position)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(habit)
+        }
+
         holder.bind(habit)
     }
 }
