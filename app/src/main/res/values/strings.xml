@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">HabitTracker</string>
+    <string name="add_habit">Add habit</string>
+    <string name="habit">Habit</string>
+    <string name="habit_name_drink_water">Habit Name (Drink water)</string>
+    <string name="description_optional">Description (optional)</string>
+    <string name="frequency">Frequency</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="save_habit">Save habit</string>
+    <string name="s">S</string>
+    <string name="m">M</string>
+    <string name="t">T</string>
+    <string name="w">W</string>
+    <string name="f">F</string>
+    <string name="habit_name_cannot_be_empty">Habit name cannot be empty</string>
 </resources>

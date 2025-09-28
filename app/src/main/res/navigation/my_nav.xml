@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/habitsFragment">
+
+    <fragment
+        android:id="@+id/habitsFragment"
+        android:name="com.trevisol.habittracker.view.HabitsFragment"
+        android:label="fragment_habits"
+        tools:layout="@layout/fragment_habits" >
+        <action
+            android:id="@+id/action_habitsFragment_to_habitCreationFragment"
+            app:destination="@id/habitRegisterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/habitRegisterFragment"
+        android:name="com.trevisol.habittracker.view.HabitRegisterFragment"
+        android:label="fragment_habit_creation"
+        tools:layout="@layout/fragment_habit_register" />
+</navigation>
