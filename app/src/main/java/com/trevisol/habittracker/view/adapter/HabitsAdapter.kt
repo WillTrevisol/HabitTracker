@@ -2,14 +2,16 @@ package com.trevisol.habittracker.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.trevisol.habittracker.R
 import com.trevisol.habittracker.databinding.HabitTileBinding
 import com.trevisol.habittracker.domain.model.Habit
 
 class HabitsAdapter(
-    private val onItemClick: (Habit) -> Unit
+    private val onHabitClickListener: OnHabitClickListener
 ): ListAdapter<Habit, HabitsAdapter.HabitsTileViewHolder>(HabitDiffCallback) {
 
     inner class HabitsTileViewHolder(private val tileHabitBinding: HabitTileBinding): RecyclerView.ViewHolder(tileHabitBinding.root) {
@@ -38,7 +40,19 @@ class HabitsAdapter(
         val habit = getItem(position)
 
         holder.itemView.setOnClickListener {
-            onItemClick(habit)
+            onHabitClickListener.onHabitClick(habit.id)
+        }
+
+        holder.itemView.setOnCreateContextMenuListener { menu, v, menuInfo ->
+            (onHabitClickListener as? Fragment)?.activity?.menuInflater?.inflate(
+                R.menu.context_menu_habit,
+                menu
+            )
+
+            menu.findItem(R.id.removeHabit)?.setOnMenuItemClickListener {
+                onHabitClickListener.onRemoveHabitClick(habit)
+                true
+            }
         }
 
         holder.bind(habit)

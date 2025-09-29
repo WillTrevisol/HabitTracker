@@ -29,6 +29,10 @@ class HabitsViewModel(private val repository: HabitRepository): ViewModel() {
         repository.update(habit)
     }
 
+    fun removeHabit(habit: Habit) = viewModelScope.launch(Dispatchers.IO) {
+        repository.delete(habit)
+    }
+
     private val _habit = MutableStateFlow<Habit?>(null)
     val habit: StateFlow<Habit?> = _habit.asStateFlow()
 

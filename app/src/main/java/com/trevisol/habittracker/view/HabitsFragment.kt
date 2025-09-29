@@ -17,10 +17,11 @@ import com.trevisol.habittracker.R
 import com.trevisol.habittracker.databinding.FragmentHabitsBinding
 import com.trevisol.habittracker.domain.model.Habit
 import com.trevisol.habittracker.view.adapter.HabitsAdapter
+import com.trevisol.habittracker.view.adapter.OnHabitClickListener
 import com.trevisol.habittracker.viewmodel.HabitsViewModel
 import kotlinx.coroutines.launch
 
-class HabitsFragment : Fragment() {
+class HabitsFragment: Fragment(), OnHabitClickListener {
 
     private lateinit var habitsFragmentBinding: FragmentHabitsBinding
 
@@ -28,9 +29,7 @@ class HabitsFragment : Fragment() {
         HabitsViewModel.habitsViewModelFactory()
     }
 
-    private val habitsAdapter = HabitsAdapter {
-        onHabitClick(it)
-    }
+    private val habitsAdapter = HabitsAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,9 +70,13 @@ class HabitsFragment : Fragment() {
         }
     }
 
-    private fun onHabitClick(habit: Habit) {
+    override fun onHabitClick(id: Long) {
         val bundle = Bundle()
-        bundle.putLong("habitId", habit.id)
+        bundle.putLong("habitId", id)
         findNavController().navigate(R.id.habitRegisterFragment, bundle)
+    }
+
+    override fun onRemoveHabitClick(habit: Habit) {
+        viewModel.removeHabit(habit)
     }
 }
