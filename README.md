@@ -16,3 +16,4 @@ O aplicativo atende a todos os requisitos de um sistema CRUD completo, permitind
 * **✔️ Acompanhamento Diário:** O usuário pode marcar um hábito como concluído apenas uma vez por dia. O status é resetado automaticamente no dia seguinte.
 
 ---
+[Vídeo demonstração do app](https://youtube.com/shorts/CSzfdxbcuhQ?si=Gk3fVqWtOQY_44Gc)
