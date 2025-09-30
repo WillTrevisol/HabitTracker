@@ -26,6 +26,7 @@ class HabitsAdapter(
         }
         fun bind(habitWithStatus: HabitWithStatus) {
             tileHabitBinding.textHabitTitle.text = habitWithStatus.habit.name
+            tileHabitBinding.textHabitDescription.text = habitWithStatus.habit.description
             tileHabitBinding.checkboxHabitStatus.isChecked = habitWithStatus.isCompletedToday
         }
     }
