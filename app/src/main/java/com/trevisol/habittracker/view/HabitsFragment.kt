@@ -52,11 +52,11 @@ class HabitsFragment: Fragment(), OnHabitClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.app_name)
+        (activity as AppCompatActivity).supportActionBar?.subtitle = getString(R.string.habits_list)
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.habits.collect {
-                    Log.d("HabitsFragment", "Lista de habitos recebida: $it")
+                viewModel.habitsWithStatus.collect {
                     habitsAdapter.submitList(it)
                 }
             }
@@ -78,5 +78,9 @@ class HabitsFragment: Fragment(), OnHabitClickListener {
 
     override fun onRemoveHabitClick(habit: Habit) {
         viewModel.removeHabit(habit)
+    }
+
+    override fun onHabitStatusChanged(id: Long, isChecked: Boolean) {
+        viewModel.habitStatusChanged(id, isChecked)
     }
 }

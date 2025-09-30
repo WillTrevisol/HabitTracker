@@ -17,4 +17,7 @@
     <string name="fri">Fri</string>
     <string name="sat">Sat</string>
     <string name="remove_habit">Remove habit</string>
+    <string name="habits_list">Habits list</string>
+    <string name="habit_details">Habit details</string>
+    <string name="create_habit">Create habit</string>
 </resources>

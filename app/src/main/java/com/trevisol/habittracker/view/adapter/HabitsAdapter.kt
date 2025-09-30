@@ -8,25 +8,34 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.trevisol.habittracker.R
 import com.trevisol.habittracker.databinding.HabitTileBinding
-import com.trevisol.habittracker.domain.model.Habit
+import com.trevisol.habittracker.domain.model.HabitWithStatus
 
 class HabitsAdapter(
     private val onHabitClickListener: OnHabitClickListener
-): ListAdapter<Habit, HabitsAdapter.HabitsTileViewHolder>(HabitDiffCallback) {
+): ListAdapter<HabitWithStatus, HabitsAdapter.HabitsTileViewHolder>(HabitDiffCallback) {
 
     inner class HabitsTileViewHolder(private val tileHabitBinding: HabitTileBinding): RecyclerView.ViewHolder(tileHabitBinding.root) {
-        fun bind(habit: Habit) {
-            tileHabitBinding.textHabitTitle.text = habit.name
-            tileHabitBinding.checkboxHabitStatus.isChecked = habit.status
+
+        init {
+            tileHabitBinding.checkboxHabitStatus.setOnCheckedChangeListener { _, isChecked ->
+                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                    val habitWithStatus = getItem(bindingAdapterPosition)
+                    onHabitClickListener.onHabitStatusChanged(habitWithStatus.habit.id, isChecked)
+                }
+            }
+        }
+        fun bind(habitWithStatus: HabitWithStatus) {
+            tileHabitBinding.textHabitTitle.text = habitWithStatus.habit.name
+            tileHabitBinding.checkboxHabitStatus.isChecked = habitWithStatus.isCompletedToday
         }
     }
 
-    companion object HabitDiffCallback : DiffUtil.ItemCallback<Habit>() {
-        override fun areItemsTheSame(oldItem: Habit, newItem: Habit): Boolean {
-            return oldItem.id == newItem.id
+    companion object HabitDiffCallback : DiffUtil.ItemCallback<HabitWithStatus>() {
+        override fun areItemsTheSame(oldItem: HabitWithStatus, newItem: HabitWithStatus): Boolean {
+            return oldItem.habit.id == newItem.habit.id
         }
 
-        override fun areContentsTheSame(oldItem: Habit, newItem: Habit): Boolean {
+        override fun areContentsTheSame(oldItem: HabitWithStatus, newItem: HabitWithStatus): Boolean {
             return oldItem == newItem
         }
     }
@@ -37,10 +46,10 @@ class HabitsAdapter(
     }
 
     override fun onBindViewHolder(holder: HabitsTileViewHolder, position: Int) {
-        val habit = getItem(position)
+        val habitWithStatus = getItem(position)
 
         holder.itemView.setOnClickListener {
-            onHabitClickListener.onHabitClick(habit.id)
+            onHabitClickListener.onHabitClick(habitWithStatus.habit.id)
         }
 
         holder.itemView.setOnCreateContextMenuListener { menu, v, menuInfo ->
@@ -50,11 +59,11 @@ class HabitsAdapter(
             )
 
             menu.findItem(R.id.removeHabit)?.setOnMenuItemClickListener {
-                onHabitClickListener.onRemoveHabitClick(habit)
+                onHabitClickListener.onRemoveHabitClick(habitWithStatus.habit)
                 true
             }
         }
 
-        holder.bind(habit)
+        holder.bind(habitWithStatus)
     }
 }

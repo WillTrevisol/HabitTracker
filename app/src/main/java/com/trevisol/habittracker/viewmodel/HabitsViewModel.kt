@@ -7,19 +7,36 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.trevisol.habittracker.HabitApplication
 import com.trevisol.habittracker.domain.model.Habit
+import com.trevisol.habittracker.domain.model.HabitRecord
+import com.trevisol.habittracker.domain.model.HabitWithStatus
+import com.trevisol.habittracker.domain.repository.HabitRecordRepository
 import com.trevisol.habittracker.domain.repository.HabitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
-class HabitsViewModel(private val repository: HabitRepository): ViewModel() {
+class HabitsViewModel(
+    private val repository: HabitRepository,
+    private val recordRepository: HabitRecordRepository
+): ViewModel() {
 
-    val habits = repository.getAll()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val habitsWithStatus = repository.getAll().combine(recordRepository.getRecordsForDate(getTodayDate())) {
+        habits, records ->
+            val completedHabitsIds = records.map { it.habitId }.toSet()
+            habits.map { habit ->
+                HabitWithStatus(
+                    habit = habit,
+                    isCompletedToday = completedHabitsIds.contains(habit.id)
+                )
+            }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun insertHabit(habit: Habit) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(habit)
@@ -44,6 +61,25 @@ class HabitsViewModel(private val repository: HabitRepository): ViewModel() {
         }
     }
 
+    fun habitStatusChanged(id: Long, isChecked: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val today = getTodayDate()
+            if (isChecked) {
+                recordRepository.insertRecord(HabitRecord(habitId = id, date = today))
+            } else {
+                recordRepository.deleteRecord(id, today)
+            }
+        }
+    }
+
+    fun getTodayDate(): Date = Calendar.getInstance().apply {
+        set(Calendar.HOUR, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MILLISECOND, 0)
+    }.time
+
     companion object {
         fun habitsViewModelFactory(): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
@@ -55,7 +91,8 @@ class HabitsViewModel(private val repository: HabitRepository): ViewModel() {
                         extras[APPLICATION_KEY]
                     )
                     return HabitsViewModel(
-                        (application as HabitApplication).habitRepository
+                        (application as HabitApplication).habitRepository,
+                        application.habitRecordRepository
                     ) as T
                 }
             }

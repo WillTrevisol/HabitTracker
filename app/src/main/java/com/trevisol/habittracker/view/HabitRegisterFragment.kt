@@ -46,7 +46,7 @@ class HabitRegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.app_name)
+
 
         val habitId = arguments?.getLong("habitId")
         if (habitId != null) {
@@ -81,6 +81,10 @@ class HabitRegisterFragment : Fragment() {
                 }
             }
         }
+
+        (activity as AppCompatActivity).supportActionBar?.subtitle =
+            if (habitId != null) getString(R.string.habit_details)
+            else getString(R.string.create_habit)
 
         fragmentHabitRegisterBinding.habitRegisterFragment.frequencyToggleGroupButton.addOnButtonCheckedListener { toggleGroup, checkedId, isChecked ->
             if (isChecked) {

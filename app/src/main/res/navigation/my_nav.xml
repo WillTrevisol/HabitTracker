@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/habitsFragment"
         android:name="com.trevisol.habittracker.view.HabitsFragment"
-        android:label="fragment_habits"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_habits" >
         <action
             android:id="@+id/action_habitsFragment_to_habitCreationFragment"
@@ -17,6 +17,6 @@
     <fragment
         android:id="@+id/habitRegisterFragment"
         android:name="com.trevisol.habittracker.view.HabitRegisterFragment"
-        android:label="fragment_habit_creation"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_habit_register" />
 </navigation>
